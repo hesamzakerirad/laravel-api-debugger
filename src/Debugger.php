@@ -63,6 +63,19 @@ class Debugger
             return;
         }
 
-        //
+        return [
+            'debugger' => [
+                'app' => [
+                    'environment' => app()->environment(),
+                    'laravel_version' => app()->version(),
+                    'php_version' => phpversion(),
+                ],
+                'request' => [
+                    'path' => $request->getPathInfo(),
+                    'ip' => $request->ip(),
+                    'authenticated' => auth()->check(),
+                ]
+            ]
+        ];
     }
 }
