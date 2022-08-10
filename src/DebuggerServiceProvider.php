@@ -20,11 +20,11 @@ class DebuggerServiceProvider extends ServiceProvider
         ], 'debugger-config');
 
         //register middleware
-        app('router')->aliasMiddleware('debugger', config('debugger.middleware_class'));
+        app('router')->aliasMiddleware('debugger', \HesamRad\Debugger\Middleware\DebuggerMiddleware::class);
 
         //binding Debugger as a singleton
-        $this->app->singleton(config('debugger.debugger_class'), function () {
-            return new (config('debugger.debugger_class'))(config('debugger'));
+        $this->app->singleton(Debugger::class, function () {
+            return new Debugger(config('debugger'));
         });
     }
 
@@ -37,7 +37,7 @@ class DebuggerServiceProvider extends ServiceProvider
     {
         //registering a custom macro
         Request::macro('debug', function () {
-            return app(config('debugger.debugger_class'))->debug($this);
+            return app(Debugger::class)->debug($this);
         });
     }
 }
