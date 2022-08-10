@@ -16,6 +16,8 @@ class DebuggerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $debuggingData = [];
+
         /**
          * Checking to see if application 
          * is on debug mode.
@@ -41,8 +43,8 @@ class DebuggerMiddleware
         $response = $next($request);
 
 
-        if ($appIsOnDebugMode) {
-            $responseData = json_decode($response->getContent());
+        if ($appIsOnDebugMode && (! is_null($debuggingData))) {
+            $responseData = json_decode($response->getContent(), true);
             $responseData = array_merge($responseData, $debuggingData);
             $response->setContent(json_encode($responseData));
         }
