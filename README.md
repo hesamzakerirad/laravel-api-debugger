@@ -71,24 +71,34 @@ Now every route that goes through `DebuggerMiddleware` will be investigated and 
 After setting `APP_DEBUG` key to `true` and requesting a route with debugger middleware on top of it, you'll be presented with this response.
 
 ```json
-"data": {
-    []
-},
+"data": [],
 "debugger": {
     "app": {
         "environment": "local",
         "laravel_version": "8.83.18",
         "php_version": "8.0.13",
-        "locale": "en"
+        "locale": "fa"
     },
     "request": {
         "ip": "127.0.0.1",
-        "route": "/",
-        "method": "GET",
+        "route": "/auth/login",
+        "method": "POST"
+    },
+    "session": {
+        "authenticated": false,
+        "token": null
     },
     "queries": {
-        "count": 0,
-        "data": null
+        "count": 1,
+        "data": [
+            {
+                "query": "select * from `users` where `email` = ? limit 1",
+                "bindings": [
+                    "user@test.com"
+                ],
+                "time": 0.83
+            }
+        ]
     }
 }
 ```
