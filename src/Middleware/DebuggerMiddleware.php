@@ -16,34 +16,12 @@ class DebuggerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $debuggingData = [];
+        $request->listen();
 
-        /**
-         * Checking to see if application 
-         * is on debug mode.
-         * 
-         */
-        $appIsOnDebugMode = env('app_debug') ?? false;
-
-        /**
-         * If on debugging mode, the debugger will
-         * start to look into the request.
-         * 
-         */
-        if ($appIsOnDebugMode) {
-            $debuggingData = $request->debug();
-        }
-
-        /**
-         * To keep the system running, I will 
-         * hand over the request further into
-         * the application.
-         * 
-         */
         $response = $next($request);
 
-
-        if ($appIsOnDebugMode && (! is_null($debuggingData))) {
+        if ($request->isBeingDebugged()) {
+            $debuggingData = $request->debug();
             $responseData = json_decode($response->getContent(), true);
             $responseData = array_merge($responseData, $debuggingData);
             $response->setContent(json_encode($responseData));
