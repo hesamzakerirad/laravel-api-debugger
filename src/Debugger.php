@@ -84,6 +84,14 @@ class Debugger
 
         return [
             'debugger' => [
+                'server' => [
+                    'web_server' => $_SERVER['SERVER_SOFTWARE'],
+                    'protocol' => $_SERVER['SERVER_PROTOCOL'],
+                    'remote_address' => $_SERVER['REMOTE_ADDR'],
+                    'remote_port' => $_SERVER['REMOTE_PORT'],
+                    'server_name' => $_SERVER['SERVER_NAME'],
+                    'server_port' => $_SERVER['SERVER_PORT'],
+                ],
                 'app' => [
                     'environment' => app()->environment(),
                     'laravel_version' => app()->version(),
@@ -92,7 +100,7 @@ class Debugger
                 ],
                 'request' => [
                     'ip' => $request->ip(),
-                    'route' => $request->getPathInfo(),
+                    'uri' => $request->getPathInfo(),
                     'method' => $request->method(),
                 ],
                 'session' => [
