@@ -1,20 +1,20 @@
-<?php 
+<?php
 
 namespace HesamRad\Debugger;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Debugger
 {
     /**
      * Creates a new Debugger object.
      *
-     * @param  array  $config
      * @return void
      */
-    public function __construct(array $config = [])
+    public function __construct()
     {
-        $this->config = $config;
+        //
     }
 
     /**
@@ -48,7 +48,28 @@ class Debugger
      */
     public function enabled()
     {
-        return $this->config('enabled') == true;
+        return env('app_debug') == true;
+    }
+
+    /**
+     * Check to see if debugger is working
+     * on a request.
+     *
+     * @return bool
+     */
+    public function isBeingDebugged()
+    {
+        return $this->enabled();
+    }
+
+    /**
+     * Start listening to an incoming request.
+     *
+     * @return void
+     */
+    public function listen()
+    {
+        return ! $this->enabled() ?: DB::enableQueryLog();
     }
 
     /**
@@ -63,17 +84,28 @@ class Debugger
             return;
         }
 
+        $queries = DB::getQueryLog();
+
         return [
             'debugger' => [
                 'app' => [
                     'environment' => app()->environment(),
                     'laravel_version' => app()->version(),
                     'php_version' => phpversion(),
+                    'locale' => app()->getLocale(),
                 ],
                 'request' => [
-                    'path' => $request->getPathInfo(),
                     'ip' => $request->ip(),
+                    'route' => $request->getPathInfo(),
+                    'method' => $request->method(),
+                ],
+                'session' => [
                     'authenticated' => auth()->check(),
+                    ''
+                ],
+                'queries' => [
+                    'count' => count($queries),
+                    'data' => $queries
                 ]
             ]
         ];
