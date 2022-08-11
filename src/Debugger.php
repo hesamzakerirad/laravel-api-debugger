@@ -76,14 +76,10 @@ class Debugger
      * Debug the given request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return array
      */
     public function debug(Request $request)
     {
-        if (! $this->enabled()) {
-            return;
-        }
-
         $queries = DB::getQueryLog();
 
         return [
@@ -101,7 +97,7 @@ class Debugger
                 ],
                 'session' => [
                     'authenticated' => auth()->check(),
-                    ''
+                    'token' => $request->bearerToken(),
                 ],
                 'queries' => [
                     'count' => count($queries),
