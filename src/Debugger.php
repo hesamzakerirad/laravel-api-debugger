@@ -102,6 +102,8 @@ class Debugger
                     'ip' => $request->ip(),
                     'uri' => $request->getPathInfo(),
                     'method' => $request->method(),
+                    'body' => $request->all(),
+                    'headers' => $request->header()
                 ],
                 'session' => [
                     'authenticated' => auth()->check(),
