@@ -49,6 +49,8 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
 
 I tried `/users/1` as an example.
 
+Make sure to send the `Accept` header as `application/json` otherwise debugger won't look into the request.
+
 ```json
 {
   "data": {
