@@ -24,7 +24,7 @@ Add it to the routes you want to debug.
 
 ```php
 Route::middleware('debugger')->group(function () {
-    Route::get('users/{email}', [UserController::class, 'show']);
+    Route::get('users', [UserController::class, 'show']);
 });
 ```
 
@@ -52,10 +52,10 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
     },
     "request": {
       "ip": "127.0.0.1",
-      "uri": "/users/user@test.com",
+      "uri": "/users",
       "method": "GET",
       "body": {
-        "test": "test"
+        "email": "user@test.com"
       },
       "headers": {
         "accept": ["application/json"],
