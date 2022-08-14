@@ -16,7 +16,7 @@ class DebuggerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->listen();
+        $request->debug();
 
         $response = $next($request);
 
@@ -29,7 +29,7 @@ class DebuggerMiddleware
         }
 
         $responseData = json_decode($response->getContent(), true);
-        $responseData = array_merge($responseData, $request->debug());
+        $responseData = array_merge($responseData, $request->report());
         $response->setContent(json_encode($responseData));
 
         return $response;

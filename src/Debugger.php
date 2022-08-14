@@ -63,57 +63,117 @@ class Debugger
     }
 
     /**
-     * Start listening to an incoming request.
+     * Start the process of debugging.
      *
      * @return void
      */
-    public function listen()
+    public function debug()
     {
         return ! $this->enabled() ?: DB::enableQueryLog();
     }
 
     /**
-     * Debug the given request.
+     * Report everything there is about 
+     * the given request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function debug(Request $request)
+    public function report(Request $request)
+    {
+        return [
+            'debugger' => [
+                'server' => $this->getServerInformation(),
+                'app' => $this->getApplicationInformation(),
+                'request' => $this->getRequestInformation($request),
+                'session' => $this->getSessionInformation($request),
+                'queries' => $this->getQueriesInformation()
+            ]
+        ];
+    }
+
+    /**
+     * Get some information about the 
+     * server which the application is 
+     * run on.
+     *
+     * @return array
+     */
+    protected function getServerInformation()
+    {
+        return [
+            'web_server' => $_SERVER['SERVER_SOFTWARE'],
+            'protocol' => $_SERVER['SERVER_PROTOCOL'],
+            'remote_address' => $_SERVER['REMOTE_ADDR'],
+            'remote_port' => $_SERVER['REMOTE_PORT'],
+            'server_name' => $_SERVER['SERVER_NAME'],
+            'server_port' => $_SERVER['SERVER_PORT'],
+        ];
+    }
+
+    /**
+     * Get some information about the 
+     * application itself.
+     *
+     * @return array
+     */
+    protected function getApplicationInformation()
+    {
+        return [
+            'environment' => app()->environment(),
+            'laravel_version' => app()->version(),
+            'php_version' => phpversion(),
+            'locale' => app()->getLocale(),
+        ];
+    }
+
+    /**
+     * Get some information about the 
+     * given request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function getRequestInformation(Request $request) 
+    {
+        return [
+            'ip' => $request->ip(),
+            'uri' => $request->getPathInfo(),
+            'method' => $request->method(),
+            'body' => $request->all(),
+            'headers' => $request->header()
+        ];
+    }
+
+    /**
+     * Get some information about the 
+     * session information from the 
+     * given request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function getSessionInformation(Request $request)
+    {
+        return [
+            'authenticated' => auth()->check(),
+            'token' => $request->bearerToken(),
+        ];
+    }
+
+    /**
+     * Get some information about the 
+     * executed queries.
+     *
+     * @return array
+     */
+    protected function getQueriesInformation()
     {
         $queries = DB::getQueryLog();
 
         return [
-            'debugger' => [
-                'server' => [
-                    'web_server' => $_SERVER['SERVER_SOFTWARE'],
-                    'protocol' => $_SERVER['SERVER_PROTOCOL'],
-                    'remote_address' => $_SERVER['REMOTE_ADDR'],
-                    'remote_port' => $_SERVER['REMOTE_PORT'],
-                    'server_name' => $_SERVER['SERVER_NAME'],
-                    'server_port' => $_SERVER['SERVER_PORT'],
-                ],
-                'app' => [
-                    'environment' => app()->environment(),
-                    'laravel_version' => app()->version(),
-                    'php_version' => phpversion(),
-                    'locale' => app()->getLocale(),
-                ],
-                'request' => [
-                    'ip' => $request->ip(),
-                    'uri' => $request->getPathInfo(),
-                    'method' => $request->method(),
-                    'body' => $request->all(),
-                    'headers' => $request->header()
-                ],
-                'session' => [
-                    'authenticated' => auth()->check(),
-                    'token' => $request->bearerToken(),
-                ],
-                'queries' => [
-                    'count' => count($queries),
-                    'data' => $queries
-                ]
-            ]
+            'count' => count($queries),
+            'data' => $queries
         ];
     }
 }

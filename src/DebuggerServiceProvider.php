@@ -39,17 +39,17 @@ class DebuggerServiceProvider extends ServiceProvider
     {
         //registering a custom macro
         Request::macro('debug', function () {
-            return app(Debugger::class)->debug($this);
-        });
-
-        //registering a custom macro
-        Request::macro('listen', function () {
-            return app(Debugger::class)->listen();
+            return app(Debugger::class)->debug();
         });
 
         //registering a custom macro
         Request::macro('isBeingDebugged', function () {
             return app(Debugger::class)->isBeingDebugged();
+        });
+
+        //registering a custom macro
+        Request::macro('report', function () {
+            return app(Debugger::class)->report($this);
         });
     }
 }
