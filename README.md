@@ -15,54 +15,16 @@ Install the package from Composer.
 composer require hesamrad/laravel-api-debugger
 ```
 
+
 ### Step #2
-Add the middleware to the `App/Http/Kernel.php` of the applcation.
-
-```php 
-protected $middleware = [
-    // \App\Http\Middleware\TrustHosts::class,
-    \App\Http\Middleware\TrustProxies::class,
-    \Illuminate\Http\Middleware\HandleCors::class,
-    \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
-    \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-    \App\Http\Middleware\TrimStrings::class,
-    \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-
-    // Add Debugger middleware here...
-    \HesamRad\Debugger\Middleware\DebuggerMiddleware::class
-];
-```
-
-### Step #3
-Register the same middleware in the same file inside `$routesMiddlewares` array.
-
-```php
-protected $routeMiddleware = [
-    'auth' => \App\Http\Middleware\Authenticate::class,
-    'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-    'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
-    'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-    'can' => \Illuminate\Auth\Middleware\Authorize::class,
-    'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-    'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-    'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-    'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-    'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-
-    // Add Debugger middleware here...
-    'debugger' => \HesamRad\Debugger\Middleware\DebuggerMiddleware::class
-];
-```
-
-### Step #4
 Add it to the routes you want to debug.
 
 ```php
 Route::middleware('debugger')->group(function () {
-    Route::get('/', [SomeController::class, 'index']);
+    Route::get('users/{email}', [UserController::class, 'show']);
 });
 ```
-And you're done.
+And you're done! Told you it was easy :)
 
 Now every route that goes through `DebuggerMiddleware` will be investigated and reported back to you.
 
@@ -72,7 +34,11 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
 
 ```json
 {
-    "data": [],
+    "data": {
+		"id": 1,
+		"name": "Demo User",
+		"email": "user@test.com",
+	},
     "debugger": {
         "app": {
             "environment": "local",
@@ -82,8 +48,8 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
         },
         "request": {
             "ip": "127.0.0.1",
-            "route": "/auth/login",
-            "method": "POST"
+            "route": "/users/user@test.com",
+            "method": "GET"
         },
         "session": {
             "authenticated": false,
