@@ -23,8 +23,19 @@ composer require hesamrad/laravel-api-debugger
 Add it to the routes you want to debug.
 
 ```php
-Route::middleware('debugger')->group(function () {
-    Route::get('users', [UserController::class, 'show']);
+Route::middleware('debugger')->group(function () { // <- I added the middleware to a group of routes
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::post('/', [UserController::class, 'store']);
+
+        Route::prefix('{user}')->group(function () {
+            Route::get('/', [UserController::class, 'show']);
+            Route::patch('/', [UserController::class, 'update']);
+            Route::delete('/', [UserController::class, 'destroy']);
+        });
+    });
+
 });
 ```
 
@@ -35,6 +46,8 @@ Now every route that goes through `DebuggerMiddleware` will be investigated and 
 ### Let's see an example
 
 After setting `APP_DEBUG` key to `true` and requesting a route with debugger middleware on top of it, you'll be presented a response like this.
+
+I tried `/users/1` as an example.
 
 ```json
 {
@@ -52,11 +65,9 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
     },
     "request": {
       "ip": "127.0.0.1",
-      "uri": "/users",
+      "uri": "/users/1",
       "method": "GET",
-      "body": {
-        "email": "user@test.com"
-      },
+      "body": [],
       "headers": {
         "accept": ["application/json"],
         "user-agent": ["PostmanRuntime/7.29.2"],
@@ -75,8 +86,8 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
       "count": 1,
       "data": [
         {
-          "query": "select * from `users` where `email` = ? limit 1",
-          "bindings": ["user@test.com"],
+          "query": "select * from `users` where `id` = ? limit 1",
+          "bindings": ["1"],
           "time": 0.83
         }
       ]
