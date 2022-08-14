@@ -47,10 +47,36 @@ After setting `APP_DEBUG` key to `true` and requesting a route with debugger mid
             "locale": "fa"
         },
         "request": {
-            "ip": "127.0.0.1",
-            "route": "/users/user@test.com",
-            "method": "GET"
-        },
+			"ip": "127.0.0.1",
+			"uri": "/users/user@test.com",
+			"method": "GET",
+			"body": {
+				"test": "test"
+			},
+			"headers": {
+				"accept": [
+					"application/json"
+				],
+				"user-agent": [
+					"PostmanRuntime/7.29.2"
+				],
+				"cache-control": [
+					"no-cache"
+				],
+				"postman-token": [
+					"33ba20a5-db9a-4035-a593-4f32774e0854"
+				],
+				"host": [
+					"localhost:8000"
+				],
+				"accept-encoding": [
+					"gzip, deflate, br"
+				],
+				"connection": [
+					"keep-alive"
+				]
+			}
+		},
         "session": {
             "authenticated": false,
             "token": null
