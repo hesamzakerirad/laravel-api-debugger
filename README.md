@@ -57,6 +57,14 @@ I tried `/users/1` as an example.
     "email": "user@test.com"
   },
   "debugger": {
+    "server": {
+      "web_server": "PHP 8.1.0 Development Server",
+      "protocol": "HTTP/1.1",
+      "remote_address": "127.0.0.1",
+      "remote_port": "64714",
+      "server_name": "127.0.0.1",
+      "server_port": "8000"
+    },
     "app": {
       "environment": "local",
       "laravel_version": "8.83.18",
