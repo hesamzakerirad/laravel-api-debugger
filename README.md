@@ -34,7 +34,7 @@ Now every route that goes through `DebuggerMiddleware` will be investigated and 
 
 ### Let's see an example
 
-After setting `APP_DEBUG` key to `true` and requesting a route with debugger middleware on top of it, you'll be presented with this response.
+After setting `APP_DEBUG` key to `true` and requesting a route with debugger middleware on top of it, you'll be presented a response like this.
 
 ```json
 {
@@ -89,4 +89,4 @@ I hope this package helps you with debugging your JSON APIs as it has helped me 
 
 Be sure to open an issue if you encounter anything out of the ordinary.
 
-Feel free to add ideas to the package to improve its functionality.
+Feel free to add ideas to the package to improve its functionality for others.
