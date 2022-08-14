@@ -20,17 +20,16 @@ class DebuggerMiddleware
 
         $response = $next($request);
 
-        if (! $request->wantsJson()) {
+        if (! ($request->wantsJson() && $request->isBeingDebugged())) {
             return $response;
         }
 
-        if (! $request->isBeingDebugged()) {
-            return $response;
-        }
+        $content = array_merge(
+            json_decode($response->getContent(), true), 
+            $request->report()
+        );
 
-        $responseData = json_decode($response->getContent(), true);
-        $responseData = array_merge($responseData, $request->report());
-        $response->setContent(json_encode($responseData));
+        $response->setContent(json_encode($content));
 
         return $response;
     }
