@@ -21,6 +21,13 @@ class DebuggerServiceProvider extends ServiceProvider
         $this->app->singleton(Debugger::class, function () {
             return new Debugger();
         });
+
+        /**
+         * Registering the middleware with
+         * the application.
+         * 
+         */
+        app('router')->aliasMiddleware('debugger', \HesamRad\Debugger\Middleware\DebuggerMiddleware::class);
     }
 
     /**
