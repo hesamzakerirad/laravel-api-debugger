@@ -48,7 +48,7 @@ class Debugger
      */
     public function enabled()
     {
-        return env('app_debug') == true;
+        return env('APP_DEBUG') == true;
     }
 
     /**
