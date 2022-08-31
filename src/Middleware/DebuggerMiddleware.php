@@ -20,7 +20,7 @@ class DebuggerMiddleware
 
         $response = $next($request);
 
-        if (! ($request->wantsJson() && $request->isBeingDebugged())) {
+        if (! ($request->wantsJson() && $request->isBeingDebugged() && $response->getContent())) {
             return $response;
         }
 
