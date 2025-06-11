@@ -13,15 +13,15 @@
         {
             "name": "Hesam Rad",
             "email": "hesamzakerirad@gmail.com",
-            "homepage": "https://webly.agency",
+            "homepage": "https://hesamrad.com",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.0",
-        "illuminate/config": "^8.0 || ^9.0",
-        "illuminate/database": "^8.53 || ^9.0",
-        "illuminate/support": "^8.0 || ^9.0"
+        "php": "^8.2",
+        "illuminate/config": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
+        "illuminate/database": "^8.69 || ^9.27 || ^10.0 || ^11.0 || ^12.0",
+        "illuminate/support": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.3",

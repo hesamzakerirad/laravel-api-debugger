@@ -25,7 +25,7 @@ class DebuggerMiddleware
         }
 
         $content = array_merge(
-            json_decode($response->getContent(), true), 
+            json_decode($response->getContent(), true),
             $request->report()
         );
 
