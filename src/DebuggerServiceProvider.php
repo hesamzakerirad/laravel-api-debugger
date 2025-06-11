@@ -14,20 +14,12 @@ class DebuggerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        /**
-         * Binding Debugger as a singleton.
-         *
-         */
-        $this->app->singleton(Debugger::class, function () {
-            return new Debugger();
-        });
+        $this->app->singleton(Debugger::class, fn () => new Debugger());
 
-        /**
-         * Registering the middleware with
-         * the application.
-         * 
-         */
-        app('router')->aliasMiddleware('debugger', \HesamRad\Debugger\Middleware\DebuggerMiddleware::class);
+        app('router')->aliasMiddleware(
+            'debugger',
+            \HesamRad\Debugger\Middleware\DebuggerMiddleware::class
+        );
     }
 
     /**
@@ -37,19 +29,16 @@ class DebuggerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //registering a custom macro
         Request::macro('debug', function () {
             return app(Debugger::class)->debug();
         });
 
-        //registering a custom macro
         Request::macro('isBeingDebugged', function () {
-            return app(Debugger::class)->isBeingDebugged();
+            return app(Debugger::class)->isEnabled();
         });
 
-        //registering a custom macro
         Request::macro('report', function () {
-            return app(Debugger::class)->report($this);
+            return app(Debugger::class)->report();
         });
     }
 }

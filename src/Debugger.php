@@ -8,58 +8,13 @@ use Illuminate\Support\Facades\DB;
 class Debugger
 {
     /**
-     * Creates a new Debugger object.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Returns Debugger configuration/s.
-     *
-     * @param  string|null  $key
-     * @return mixed
-     */
-    public function config(string $key = null)
-    {
-        return isset($key) ? $this->config[$key] : $this->config;
-    }
-
-    /**
-     * Modifies Debugger configurations.
-     *
-     * @param  array $config
-     * @return void
-     */
-    public function setConfig($config = [])
-    {
-        foreach ($config as $key => $value) {
-            $this->config[$key] = $value;
-        }
-    }
-
-    /**
-     * Checks to see if Debugger is enabled.
+     * Checks if Debugger is enabled.
      *
      * @return bool
      */
-    public function enabled()
+    public function isEnabled()
     {
-        return env('APP_DEBUG') == true;
-    }
-
-    /**
-     * Check to see if debugger is working
-     * on a request.
-     *
-     * @return bool
-     */
-    public function isBeingDebugged()
-    {
-        return $this->enabled();
+        return config('app.debug') === true;
     }
 
     /**
@@ -69,33 +24,36 @@ class Debugger
      */
     public function debug()
     {
-        return ! $this->enabled() ?: DB::enableQueryLog();
+        if (! $this->isEnabled()) {
+            return;
+        }
+
+        DB::enableQueryLog();
     }
 
     /**
-     * Report everything there is about 
-     * the given request.
+     * Report everything there is about the current request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function report(Request $request)
+    public function report()
     {
+        $request = request();
+
         return [
             'debugger' => [
                 'server' => $this->getServerInformation(),
                 'app' => $this->getApplicationInformation(),
                 'request' => $this->getRequestInformation($request),
                 'session' => $this->getSessionInformation($request),
-                'queries' => $this->getQueriesInformation()
+                'queries' => $this->getQueriesInformation(),
             ]
         ];
     }
 
     /**
-     * Get some information about the 
-     * server which the application is 
-     * run on.
+     * Get information about the server on which
+     * the application is being served.
      *
      * @return array
      */
@@ -112,8 +70,7 @@ class Debugger
     }
 
     /**
-     * Get some information about the 
-     * application itself.
+     * Get information about the application itself.
      *
      * @return array
      */
@@ -128,27 +85,24 @@ class Debugger
     }
 
     /**
-     * Get some information about the 
-     * given request.
+     * Get information about the given request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function getRequestInformation(Request $request) 
+    protected function getRequestInformation(Request $request)
     {
         return [
             'ip' => $request->ip(),
             'uri' => $request->getPathInfo(),
             'method' => $request->method(),
             'body' => $request->all(),
-            'headers' => $request->header()
+            'headers' => $request->header(),
         ];
     }
 
     /**
-     * Get some information about the 
-     * session information from the 
-     * given request.
+     * Get session information from the given request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -162,8 +116,7 @@ class Debugger
     }
 
     /**
-     * Get some information about the 
-     * executed queries.
+     * Get executed query information.
      *
      * @return array
      */
