@@ -2,9 +2,7 @@
 
 # Laravel Api Debugger
 
-Laravel-Api-Debuuger is a minimal package to help you debug your json apis.
-
-It's very easy to setup; let me show you.
+Laravel API Debuuger is a minimal package to help you debug your JSON API.
 
 ## How to install?
 
@@ -12,80 +10,88 @@ Take these steps to install Laravel API Debugger.
 
 ### Step #1
 
-Install the package from Composer.
+Install the package using Composer.
 
 ```php
-composer require hesamrad/laravel-api-debugger
+composer require hesamrad/laravel-api-debugger --dev
 ```
 
 ### Step #2
 
-Add it to the routes you want to debug.
+Add the middleware to the routes you want to debug.
 
 ```php
-Route::middleware('debugger')->group(function () { // <- I added the middleware to a group of routes
-
-    Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::post('/', [UserController::class, 'store']);
-
-        Route::prefix('{user}')->group(function () {
-            Route::get('/', [UserController::class, 'show']);
-            Route::patch('/', [UserController::class, 'update']);
-            Route::delete('/', [UserController::class, 'destroy']);
-        });
-    });
-
-});
+Route::get('users', function () {
+    return response()->json([
+        'users' => User::get()
+    ]);
+})->middleware('debugger'); // <- I added the middleware to a single route for testing.
 ```
 
-And you're done! Told you it was easy :)
+For every request that goes through the specified middleware, you will have additional information to help with your debugging process.
 
-Now every route that goes through `DebuggerMiddleware` will be investigated and reported back to you.
+### Note 
+1- You need to set `APP_DEBUG` key to `true` inside your `.env` file in order to enable debugger.
 
-### Let's see an example
+2- Since this debugger works with JSON APIs, you will need to send `Accept` request header with the value of `application/json`.
 
-After setting `APP_DEBUG` key to `true` and requesting a route with debugger middleware on top of it, you'll be presented a response like this.
+### Example
 
-I tried `/users/1` as an example.
-
-Make sure to send the `Accept` header as `application/json` otherwise debugger won't look into the request.
+To demonstrate, I requested `/users` and provided the results shown below.
 
 ```json
 {
-  "data": {
-    "id": 1,
-    "name": "Demo User",
-    "email": "user@test.com"
-  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Demo User Number 1",
+      "email": "user-1@test.com"
+    },
+    {
+      "id": 2,
+      "name": "Demo User Number 2",
+      "email": "user-2@test.com"
+    }
+  ],
   "debugger": {
     "server": {
-      "web_server": "PHP 8.1.0 Development Server",
+      "web_server": "nginx/1.27.5",
       "protocol": "HTTP/1.1",
-      "remote_address": "127.0.0.1",
-      "remote_port": "64714",
-      "server_name": "127.0.0.1",
-      "server_port": "8000"
+      "remote_address": "192.168.73.1",
+      "remote_port": "52697",
+      "server_name": "test.local",
+      "server_port": "80"
     },
     "app": {
       "environment": "local",
-      "laravel_version": "8.83.18",
-      "php_version": "8.0.13",
-      "locale": "fa"
+      "laravel_version": "12.18.0",
+      "php_version": "8.3.22",
+      "locale": "en"
     },
     "request": {
-      "ip": "127.0.0.1",
-      "uri": "/users/1",
+      "ip": "192.168.65.1",
+      "uri": "/api",
       "method": "GET",
       "body": [],
       "headers": {
-        "accept": ["application/json"],
-        "user-agent": ["PostmanRuntime/7.29.2"],
-        "cache-control": ["no-cache"],
-        "postman-token": ["33ba20a5-db9a-4035-a593-4f32774e0854"],
-        "host": ["localhost:8000"],
-        "accept-encoding": ["gzip, deflate, br"],
-        "connection": ["keep-alive"]
+        "connection": [
+          "keep-alive"
+        ],
+        "accept-encoding": [
+          "gzip, deflate, br"
+        ],
+        "host": [
+          "test.local"
+        ],
+        "cache-control": [
+          "no-cache"
+        ],
+        "user-agent": [
+          "PostmanRuntime/7.44.0"
+        ],
+        "accept": [
+          "application/json"
+        ]
       }
     },
     "session": {
@@ -96,9 +102,9 @@ Make sure to send the `Accept` header as `application/json` otherwise debugger w
       "count": 1,
       "data": [
         {
-          "query": "select * from `users` where `id` = ? limit 1",
-          "bindings": ["1"],
-          "time": 0.83
+          "query": "select * from \"users\"",
+          "bindings": [],
+          "time": 1.17
         }
       ]
     }
