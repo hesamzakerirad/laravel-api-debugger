@@ -13,7 +13,7 @@ Take these steps to install Laravel API Debugger.
 Install the package using Composer.
 
 ```php
-composer require hesamrad/laravel-api-debugger --dev
+composer require hesamrad/laravel-api-debugger
 ```
 
 ### Step #2
@@ -112,8 +112,32 @@ To demonstrate, I requested `/users` and provided the results shown below.
 }
 ```
 
-I hope this package helps you with debugging your JSON APIs as it has helped me many times now.
+### dd helper but for API!
 
-Be sure to open an issue if you encounter anything out of the ordinary.
+This package introduces a handy helper called `jdd` used to dump date whenever needed. It's basically the same as `dd` method but only for APIs. (JDD stands for JSON Die and Dump.)
 
-Feel free to add ideas to the package to improve its functionality for others.
+```php
+// api.php
+
+$string = 'This is awesome!';
+
+jdd($string);
+```
+
+It outputs this:
+
+```json
+{
+    "dump": [
+        "This is awesome!"
+    ],
+    "trace": {
+        "file": "/var/www/laravel-api-debugger/routes/api.php",
+        "line": 14
+    }
+}
+```
+
+### Disclaimer
+
+This package can be dangerous when used on production environment; be sure to turn off `APP_DEBUG` on production to avoid leaking important information.
